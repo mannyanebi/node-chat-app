@@ -6,6 +6,8 @@ const http = require('http');
 const Express = require('express');
 const SocketIO = require('socket.io');
 
+//requiring a local module
+const {generateMessage} = require('./utils/message');
 
 //creating an express application
 const app = Express();
@@ -26,28 +28,16 @@ IO.on('connection', function (socket) { //this socket argument represents an ind
     console.log('New User Connected');
 
     //on connection event, emit welcome message
-    socket.emit('newMessage', {
-        from: 'Admin',
-        text: 'Welcome to the chat app',
-        createdAt: new Date().getTime()
-    });
+    socket.emit('newMessage', generateMessage('Admin','Welcome to the chat app'));
 
     //emitting a broadcast event informing other sockets about new user
-    socket.broadcast.emit('newMessage', {
-        from: 'Admin',
-        text:'New User joined',
-        createdAt: new Date().getTime()
-    });
+    socket.broadcast.emit('newMessage', generateMessage('Admin','New User joined'));
 
     //listening for a createMessage event from the client(s)
     socket.on('createMessage', function (message) {
         console.log('createMessage', message);
         //IO server emitting the event to all connected clients
-        IO.emit('newMessage', {
-            from: message.from,
-            text: message.text,
-            createdAt: new Date().getTime()
-        });
+        IO.emit('newMessage', generateMessage(message.from,message.text));
 
     });
 
