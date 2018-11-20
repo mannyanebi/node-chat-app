@@ -6,12 +6,6 @@ let socket = io(); //this socket variable is what we will use to listen for data
 //listening for a connect event from the server
 socket.on('connect', function () {
     console.log('Connected to Server');
-
-    //emitting a createMessage event 
-    // socket.emit('createMessage', {
-    //     from: 'User2',
-    //     text: 'This is from User 2'
-    // });
 });
 
 socket.on('connection', function (message) {
@@ -26,5 +20,22 @@ socket.on('disconnect', function () {
 //listening for a newMessage event from the server
 socket.on('newMessage', function (message) {
     console.log('newMessage', message);
-})
+    let li = jQuery('<li></li>');
+    li.text(`${message.from}: ${message.text}`);
 
+    jQuery('#messages').append(li);
+});
+
+//using Jquery to get message form, 
+//overidde the default event action 
+//send/emit a createMessage event
+jQuery('#message-form').on('submit', function (e) {
+    e.preventDefault();
+
+    socket.emit('createMessage', {
+        from: 'User',
+        text: jQuery('[name=message]').val()
+    }, function () {
+        // console.log('Message received', data);
+    });
+});

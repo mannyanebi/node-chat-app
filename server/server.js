@@ -34,10 +34,11 @@ IO.on('connection', function (socket) { //this socket argument represents an ind
     socket.broadcast.emit('newMessage', generateMessage('Admin','New User joined'));
 
     //listening for a createMessage event from the client(s)
-    socket.on('createMessage', function (message) {
+    socket.on('createMessage', function (message, callback) {
         console.log('createMessage', message);
         //IO server emitting the event to all connected clients
         IO.emit('newMessage', generateMessage(message.from,message.text));
+        callback('This is from the server');
 
     });
 
