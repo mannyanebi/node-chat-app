@@ -24,34 +24,31 @@ const PUBLICPATH =  PATH.join(__dirname, './../public');
 //such event is a connection
 IO.on('connection', function (socket) { //this socket argument represents an individual socket instead of that of other users connected to the server
     console.log('New User Connected');
-    
-    //creating an event [emit function is also a listener but it functions to create events]
-    // socket.emit('newEmail', {
-    //     from: 'manny@example.com',
-    //     text: 'Hey, what is going on.',
-    //     createdAt: 123
-    // });
 
-    //listening for an emitted event from the client(s)
-    // socket.on('createEmail', function (email) {
-    //     console.log('createEmail', email);
-    // });
+    //on connection event, emit welcome message
+    socket.emit('newMessage', {
+        from: 'Admin',
+        text: 'Welcome to the chat app',
+        createdAt: new Date().getTime()
+    });
 
-    //emitting an event to the client(s)
-    // socket.emit('newMessage', {
-    //     from: 'User1',
-    //     text: 'This is a Aloha text',
-    //     createdAt: new Date().getTime()
-    // });
+    //emitting a broadcast event informing other sockets about new user
+    socket.broadcast.emit('newMessage', {
+        from: 'Admin',
+        text:'New User joined',
+        createdAt: new Date().getTime()
+    });
 
     //listening for a createMessage event from the client(s)
     socket.on('createMessage', function (message) {
         console.log('createMessage', message);
+        //IO server emitting the event to all connected clients
         IO.emit('newMessage', {
             from: message.from,
             text: message.text,
             createdAt: new Date().getTime()
         });
+
     });
 
     socket.on('disconnect', function () {
