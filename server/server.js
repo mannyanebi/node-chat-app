@@ -38,16 +38,21 @@ IO.on('connection', function (socket) { //this socket argument represents an ind
     // });
 
     //emitting an event to the client(s)
-    socket.emit('newMessage', {
-        from: 'User1',
-        text: 'This is a Aloha text',
-        createdAt: new Date().getTime()
-    });
+    // socket.emit('newMessage', {
+    //     from: 'User1',
+    //     text: 'This is a Aloha text',
+    //     createdAt: new Date().getTime()
+    // });
 
     //listening for a createMessage event from the client(s)
     socket.on('createMessage', function (message) {
         console.log('createMessage', message);
-    })
+        IO.emit('newMessage', {
+            from: message.from,
+            text: message.text,
+            createdAt: new Date().getTime()
+        });
+    });
 
     socket.on('disconnect', function () {
         console.log('User was Disconnected');

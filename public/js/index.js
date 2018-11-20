@@ -14,10 +14,10 @@ socket.on('connect', function () {
     // })
 
     //emitting a createMessage event 
-    socket.emit('createMessage', {
-        from: 'User2',
-        text: 'This is from User 2'
-    });
+    // socket.emit('createMessage', {
+    //     from: 'User2',
+    //     text: 'This is from User 2'
+    // });
 });
 
 //listening for a disconnect event from the server
