@@ -9,9 +9,13 @@ describe('GenerateMessage', function () {
     //   expect(message.createdAt).toBeA('number');
     //   expect(message.from).toBe(from);
     //   expect(message.text).toBe(text);
-    expect(message).toInclude({
+    expect(message).toMatchObject({
         from: from,
         text: text
     });
+    // expect(message).toInclude({
+    //     from: from,
+    //     text: text
+    // });
    }); 
 });

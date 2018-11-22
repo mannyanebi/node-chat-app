@@ -7,7 +7,7 @@ const Express = require('express');
 const SocketIO = require('socket.io');
 
 //requiring a local module
-const {generateMessage} = require('./utils/message');
+const {generateMessage, generateLocationMessage} = require('./utils/message');
 
 //creating an express application
 const app = Express();
@@ -39,8 +39,12 @@ IO.on('connection', function (socket) { //this socket argument represents an ind
         //IO server emitting the event to all connected clients
         IO.emit('newMessage', generateMessage(message.from,message.text));
         callback('This is from the server');
-
     });
+
+    socket.on('createLocationMessage', function (coords) {
+        //this emiits a newLocation event to the clients
+        IO.emit('newLocationMessage', generateLocationMessage('Admin', `${coords.latitude}`, `${coords.longitude}`));        
+    })
 
     socket.on('disconnect', function () {
         console.log('User was Disconnected');
