@@ -38,7 +38,7 @@ IO.on('connection', function (socket) { //this socket argument represents an ind
         console.log('createMessage', message);
         //IO server emitting the event to all connected clients
         IO.emit('newMessage', generateMessage(message.from,message.text));
-        callback('This is from the server');
+        callback();
     });
 
     socket.on('createLocationMessage', function (coords) {
