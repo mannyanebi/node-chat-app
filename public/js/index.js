@@ -3,6 +3,24 @@
 //socket and keep the connection open
 let socket = io(); //this socket variable is what we will use to listen for data from the server and send to the server
 
+//autoscrolling function if messages exceed client viewport
+function scrollToBottom() {
+    //Selectors
+    let messages = jQuery('#messages');
+    let newMessage = messages.children('li:last-child');
+
+    //Heights
+    let clientHeight = messages.prop('clientHeight');
+    let scrollTop = messages.prop('scrollTop');
+    let scrollHeight = messages.prop('scrollHeight');
+    let newMessageHeight = newMessage.innerHeight();
+    let lastMessageHeight = newMessage.prev().innerHeight();
+
+    if((clientHeight + scrollTop  + newMessageHeight + lastMessageHeight) >= scrollHeight){
+        messages.scrollTop(scrollHeight);
+    }
+}
+
 //listening for a connect event from the server
 socket.on('connect', function () {
     console.log('Connected to Server');
@@ -36,6 +54,8 @@ socket.on('newMessage', function (message) {
     // li.text(`${message.from} ${formattedTime}: ${message.text}`);
 
     // jQuery('#messages').append(li);
+
+    scrollToBottom();
 });
 
 //listening for newLocationMessage event
@@ -50,6 +70,7 @@ socket.on('newLocationMessage', function (message) {
     });
 
     jQuery('#messages').append(html);
+    scrollToBottom();
 });
 
 //using Jquery to get message form, 
