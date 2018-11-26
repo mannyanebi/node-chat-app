@@ -19,24 +19,37 @@ socket.on('disconnect', function () {
 
 //listening for a newMessage event from the server
 socket.on('newMessage', function (message) {
+    //this templating engine provides to you a reusable structure
     let formattedTime = moment(message.createdAt).format('h:mm a');
-    let li = jQuery('<li></li>');
-    li.text(`${message.from} ${formattedTime}: ${message.text}`);
+    let template = jQuery('#message-template').html();
+    let html = Mustache.render(template, {
+        //this then allows you to provide a dynamic data
+        text: message.text,
+        from: message.from,
+        createdAt: formattedTime
+    });
+    
+    jQuery('#messages').append(html);
+    
+    // let formattedTime = moment(message.createdAt).format('h:mm a');
+    // let li = jQuery('<li></li>');
+    // li.text(`${message.from} ${formattedTime}: ${message.text}`);
 
-    jQuery('#messages').append(li);
+    // jQuery('#messages').append(li);
 });
 
 //listening for newLocationMessage event
 socket.on('newLocationMessage', function (message) {
-    let formattedTime = moment(message.createdAt).format('h:mm a');
-    let li = jQuery('<li></li>');
-    let a = jQuery('<a target="_blank">My Current Location</a>');
     
-    li.text(`${message.from}: ${formattedTime} `);
-    a.attr('href', message.url);
-    li.append(a);
+    let formattedTime = moment(message.createdAt).format('h:mm a');
+    let template = jQuery('#location-message-template').html();
+    let html = Mustache.render(template, {
+        from: message.from,
+        url: message.url,
+        createdAt: formattedTime
+    });
 
-    jQuery('#messages').append(li);
+    jQuery('#messages').append(html);
 });
 
 //using Jquery to get message form, 
