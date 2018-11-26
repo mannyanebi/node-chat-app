@@ -19,19 +19,20 @@ socket.on('disconnect', function () {
 
 //listening for a newMessage event from the server
 socket.on('newMessage', function (message) {
-    console.log('newMessage', message);
+    let formattedTime = moment(message.createdAt).format('h:mm a');
     let li = jQuery('<li></li>');
-    li.text(`${message.from}: ${message.text}`);
+    li.text(`${message.from} ${formattedTime}: ${message.text}`);
 
     jQuery('#messages').append(li);
 });
 
 //listening for newLocationMessage event
 socket.on('newLocationMessage', function (message) {
+    let formattedTime = moment(message.createdAt).format('h:mm a');
     let li = jQuery('<li></li>');
     let a = jQuery('<a target="_blank">My Current Location</a>');
     
-    li.text(`${message.from}: `);
+    li.text(`${message.from}: ${formattedTime} `);
     a.attr('href', message.url);
     li.append(a);
 
@@ -67,7 +68,7 @@ locationButton.on('click', function () {
     locationButton.attr('disabled', 'disabled').text('Sending location...');
 
     navigator.geolocation.getCurrentPosition(function (position) {
-        locationButton.removeAttr('disabled').text('Sending location...');
+        locationButton.removeAttr('disabled').text('Send location...');
         //emitting a location event message 
         //if navigator is allowed to process request
         socket.emit('createLocationMessage', {
@@ -76,6 +77,6 @@ locationButton.on('click', function () {
         });
     }, function () {
         alert('Unable to fetch location');
-        locationButton.removeAttr('disabled').text('Sending location...');
+        locationButton.removeAttr('disabled').text('Send location...');
     });
 })

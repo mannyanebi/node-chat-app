@@ -1,10 +1,11 @@
-//this file contains utility method for message generation
+const moment = require('moment');
 
+//this file contains utility method for message generation
 var generateMessage = function (from, text) {
     return {
         from: from,
         text: text,
-        createdAt: new Date().getTime()
+        createdAt: moment().valueOf()
     };
 };
 
@@ -12,7 +13,7 @@ var generateLocationMessage = function (from, latitude, longitude) {
     return {
         from: from,
         url: `https://www.google.com/maps?q=${latitude},${longitude}`,
-        createdAt: new Date().getTime()
+        createdAt: moment().valueOf()
     };
 };
 
