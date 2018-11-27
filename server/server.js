@@ -61,15 +61,22 @@ IO.on('connection', function (socket) { //this socket argument represents an ind
 
     //listening for a createMessage event from the client(s)
     socket.on('createMessage', function (message, callback) {
-        console.log('createMessage', message);
-        //IO server emitting the event to all connected clients
-        IO.emit('newMessage', generateMessage(message.from,message.text));
-        callback();
+        let user = users.getUser(socket.id);
+        if (user && isRealString(message.text)) {
+            //IO server emitting the event to all connected clients
+            IO.to(user.room).emit('newMessage', generateMessage(user.name,message.text));
+            callback();
+        }
     });
 
     socket.on('createLocationMessage', function (coords) {
-        //this emiits a newLocation event to the clients
-        IO.emit('newLocationMessage', generateLocationMessage('Admin', `${coords.latitude}`, `${coords.longitude}`));        
+        let user = users.getUser(socket.id);
+
+        //if user is available
+        if(user){
+            //this emiits a newLocation event to the clients
+            IO.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, `${coords.latitude}`, `${coords.longitude}`));
+        }
     })
 
     //listening when user joins
