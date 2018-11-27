@@ -24,8 +24,21 @@ function scrollToBottom() {
 //listening for a connect event from the server
 socket.on('connect', function () {
     console.log('Connected to Server');
+    //getting parameters to create join emit from url passed
+    //using a library that allows deparam just like jQuery.param
+    let params = jQuery.deparam(window.location.search);
+
+    socket.emit('join', params, function (err) {
+        if (err) {
+            alert(err);
+            window.location.href = '/'
+        } else {
+            console.log('No error');
+        }
+    })
 });
 
+//listening for a connection event to the server
 socket.on('connection', function (message) {
     console.log(message);
 });
@@ -34,6 +47,16 @@ socket.on('connection', function (message) {
 socket.on('disconnect', function () {
     console.log('Disconnected from Server');
 });
+
+socket.on('updateUserList', function (users) {
+    var ol = jQuery('<ol></ol>');
+
+    users.forEach(function (user) {
+        ol.append(jQuery('<li></li>').text(user));
+    })
+
+    jQuery('#users').html(ol);
+})
 
 //listening for a newMessage event from the server
 socket.on('newMessage', function (message) {
